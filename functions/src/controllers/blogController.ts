@@ -1,4 +1,3 @@
-// @ts-ignore
 import {Request, Response} from 'express';
 import {CrudController}   from "./crudController";
 
@@ -13,7 +12,7 @@ interface Post {
 
 export class blogController extends CrudController {
     // CREATE ODPOWIADA .POST
-    public async create(req: Request<import("express-serve-static-core").ParamsDictionary>, res: Response<any>): Promise<void> {
+    public async create(req: Request<import("express-serve-static-core").ParamsDictionary>, res: Response): Promise<void> {
         const {title,shortDescription,longDescription,id} = req.body
 
         try {
@@ -32,7 +31,7 @@ export class blogController extends CrudController {
     }
 
     // READ ODPOWIADA .GET
-    public async read(req: Request<import("express-serve-static-core").ParamsDictionary>, res: Response<any>): Promise<void> {
+    public async read(req: Request<import("express-serve-static-core").ParamsDictionary>, res: Response): Promise<void> {
         try {
             const userQuerySnapshot = await db.collection(postCollection).get();
             const users: any[] = [];
@@ -49,13 +48,13 @@ export class blogController extends CrudController {
             res.status(500).send(error);
         }
     }
-    public async update(req: Request<import("express-serve-static-core").ParamsDictionary>, res: Response<any>):Promise<void> {
+    public async update(req: Request<import("express-serve-static-core").ParamsDictionary>, res: Response):Promise<void> {
 
         await db.collection(postCollection).doc(req.params.postId).delete()
             .then( () => res.status(204).send('Pomyślnie usunięto post'))
             .catch( error => res.status(500).send(error));
     }
-    public async delete(req: Request<import("express-serve-static-core").ParamsDictionary>, res: Response<any>): Promise<void> {
+    public async delete(req: Request<import("express-serve-static-core").ParamsDictionary>, res: Response): Promise<void> {
         await db.collection(postCollection).doc(req.params.postId).set(req.body,{merge:true})
             .then( () => res.json({id:req.params.postId}))
             .catch( error => res.status(500).send(error));
